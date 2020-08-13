@@ -1,0 +1,37 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class DBTest {
+
+	public static void main(String[] args) {
+		
+		String url = "jdbc:mysql://localhost:3306/board?serverTimezone=UTC";
+		String id = "sbsst";
+		String pw = "sbs123414";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver"); // Driver 클래스 찾기(DriverManager가 등록)
+			Connection conn = DriverManager.getConnection(url, id, pw); // DB관련 회사의 connection DB 담당자
+			
+			String sql = "select * from article";
+			
+			Statement stmt = conn.createStatement(); // sql문이 넘어가는 통로
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			rs.next();
+			String title = rs.getString("title");
+			
+			System.out.println(title);
+			
+		} catch (ClassNotFoundException e) {
+			
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+}
