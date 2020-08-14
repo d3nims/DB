@@ -1,0 +1,77 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+public class DBTest {
+
+	public static void main(String[] args) {
+		
+		Scanner sc = new Scanner(System.in);
+		
+		
+		// #조회수 가장 많은 게시물 3개 만 보여주세요., 힌트 : ORDER
+		System.out.println("게시물 갯수를 입력해주세요 : ");
+		// int cnt = sc.nextInt();
+		// String sql = "select * from article order by hit limit" + cnt;
+		// 작성자명이 '1'을 포함하는 게시물만 보여주세요., 힌트 : LIKE
+		
+		String keyword = sc.nextLine();
+		String sql = "select * from article where nickname like" + ("'%" + keyword + "%'");
+		printResultSet(sql);
+		
+		String url = "jdbc:mysql://localhost:3306/t1?serverTimezone=UTC";
+		String id = "root";
+		String pw = "";
+		
+		Connection conn;
+		
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver"); // Driver 클래스 찾기(DriverManager가 등록)
+			conn = DriverManager.getConnection(url, id, pw); // DB관련 회사의 connection DB 담당자
+			
+			
+			stmt = conn.createStatement(); // sql문이 넘어가는 통로
+			rs = stmt.executeQuery(sql);
+		
+			
+			while(rs.next()) {
+			
+			
+			String title = rs.getString("title");
+			String body = rs.getString("body");
+			String nickname = rs.getString("nickname");
+			int hit = rs.getInt("hit");
+			
+			System.out.println(title);
+			System.out.println(body);
+			System.out.println(nickname);
+			System.out.println(hit);
+			
+			}
+		} catch (ClassNotFoundException e) {
+			
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			try {
+				if(conn != null) {
+					conn.close();
+				}
+				if(stmt != null) {
+					stmt.close();
+				}
+				if(rs != null) {
+					rs.close();
+				}
+			}
+		}
+		static void printResultSet(String sql) {
+			
+		}
+	}
+
+}
