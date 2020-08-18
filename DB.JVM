@@ -3,35 +3,129 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Scanner;
 
 public class DBTest {
 
 	public static void main(String[] args) {
-		
-		String url = "jdbc:mysql://localhost:3306/board?serverTimezone=UTC";
-		String id = "sbsst";
-		String pw = "sbs123414";
-		
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver"); // Driver 클래스 찾기(DriverManager가 등록)
-			Connection conn = DriverManager.getConnection(url, id, pw); // DB관련 회사의 connection DB 담당자
-			
-			String sql = "select * from article";
-			
-			Statement stmt = conn.createStatement(); // sql문이 넘어가는 통로
-			ResultSet rs = stmt.executeQuery(sql);
-			
-			rs.next();
-			String title = rs.getString("title");
-			
-			System.out.println(title);
-			
-		} catch (ClassNotFoundException e) {
-			
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
+
+		Scanner sc = new Scanner(System.in);
+
+		while (true) {
+			System.out.println("명령어 입력해주세요:");
+			String cmd = sc.nextLine();
+
+			if (cmd.equals("list")) {
+				printResultSet();
+			} else if (cmd.equals("add")) {
+				System.out.println("제목을 입력해주세요");
+				String title = sc.nextLine();
+				System.out.println("내용을 입력해주세요");
+				String body = sc.nextLine();
+				insertArticle(title, body);
+			}
 		}
 	}
 
+	static void insertArticle(String title, String body) {
+		String url = "jdbc:mysql://localhost:3306/t1?serverTimezone=UTC";
+		String id = "root";
+		String pw = "";
+
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			Class.forName("com.mysql.cj.jdbc.Driver"); // Driver 클래스 찾기(DriverManager가 등록)
+			conn = DriverManager.getConnection(url, id, pw); // DB관련 회사, connection DB 담당자
+
+			// article 테이블에서 모든 게시물정보 주세요.
+			stmt = conn.createStatement();
+			
+			String sql = "insert into article set title = '" + title + "', body = '" + body + "', nickname = '유저99', regDate = '20200817'";
+			
+			stmt.executeUpdate(sql);
+			
+		} catch (ClassNotFoundException e) {
+
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	static void printResultSet() {
+		String url = "jdbc:mysql://localhost:3306/t1?serverTimezone=UTC";
+		String id = "root";
+		String pw = "";
+
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			Class.forName("com.mysql.cj.jdbc.Driver"); // Driver 클래스 찾기(DriverManager가 등록)
+			conn = DriverManager.getConnection(url, id, pw); // DB관련 회사, connection DB 담당자
+
+			// article 테이블에서 모든 게시물정보 주세요.
+			stmt = conn.createStatement();
+			String sql = "select * from article";
+			rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+
+				int articleId = rs.getInt("id");
+				String title = rs.getString("title");
+				String body = rs.getString("body");
+				String nickname = rs.getString("nickname");
+				int hit = rs.getInt("hit");
+
+				System.out.println("번호 : " + articleId);
+				System.out.println("제목 : " + title);
+				System.out.println("내용 : " + body);
+				System.out.println("작성자 : " + nickname);
+				System.out.println("조회수 : " + hit);
+				System.out.println();
+
+			}
+
+			System.out.println("============================================");
+		} catch (ClassNotFoundException e) {
+
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
