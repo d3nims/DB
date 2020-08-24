@@ -61,10 +61,8 @@ SELECT * FROM SALGRADE;
 
 
 #사원명과 입사일을 조회하시오.
-SELECT *
-FROM DEPT d
-INNER JOIN EMP e
-INNER JOIN SALGRADE s;
+SELECT ename, hiredate FROM emp;
+
 
 
 
@@ -77,6 +75,8 @@ INNER JOIN SALGRADE s;
 
 #사원번호와 이름을 조회하시오.
 
+SELECT empno, ename FROM emp;
+
 SELECT e.ENAME, e.EMPNO
 FROM DEPT d
 INNER JOIN EMP e
@@ -85,6 +85,8 @@ INNER JOIN SALGRADE s;
 
 #사원테이블에 있는 직책의 목록을 조회하시오.
 
+SELECT job FROM emp;
+
 SELECT d.DNAME
 FROM DEPT d
 INNER JOIN EMP e
@@ -92,6 +94,10 @@ INNER JOIN SALGRADE s;
 
 
 #총 사원수를 구하시오.
+
+SELECT * FROM emp;
+
+SELECT COUNT(*) AS cnt FROM emp;
 
 
 SELECT e.ENAME
@@ -103,37 +109,23 @@ GROUP BY e.ENAME;
 #부서번호가 10인 사원을 조회하시오.
 
 
-SELECT d.DEPTNO, e.ENAME
-FROM DEPT d
-INNER JOIN EMP e
-ON d.DEPTNO = 10
-INNER JOIN SALGRADE s
-GROUP BY d.DEPTNO;
+SELECT * FROM emp WHERE deptno LIKE 10;
+
+
 
 
 #월급여가 2500이상 되는 사원을 조회하시오.
 
-SELECT e.SAL, e.ENAME
-FROM DEPT d
-INNER JOIN EMP e
-ON 
-INNER JOIN SALGRADE s
-GROUP BY e.SAL, e.ENAME;
+SELECT * FROM emp WHERE sal > 2500;
 
-SELECT *
-FROM DEPT d
-INNER JOIN EMP e
-INNER JOIN SALGRADE s;
+
+
 
 #이름이 'KING'인 사원을 조회하시오.
 
-SELECT e.ENAME, e.EMPNO
-FROM DEPT d
-INNER JOIN EMP e
-ON e.ENAME = 'KING'
-INNER JOIN SALGRADE s
-GROUP BY e.ENAME;
+SELECT * FROM emp;
 
+SELECT * FROM emp WHERE ename LIKE 'king';
 
 #사원들 중 이름이 S로 시작하는 사원의 사원번호와 이름을 조회하시오.
 
@@ -142,22 +134,31 @@ SELECT * FROM EMP WHERE ename LIKE 's%';
 
 #사원 이름에 T가 포함된 사원의 사원번호와 이름을 조회하시오.
 
-SELECT * FROM EMP WHERE ename LIKE 't%';
+SELECT * FROM emp;
+
+SELECT * FROM EMP WHERE ename LIKE '%t%';
 
 #커미션이 300, 500, 1400 인 사원의 사번,이름,커미션을 조회하시오.
 
-SELECT e.ENAME, e.EMPNO
-FROM DEPT d
-INNER JOIN EMP e
-ON 
-INNER JOIN SALGRADE s
-GROUP BY e.ENAME, e.EMPNO;
+SELECT * FROM emp;
+
+SELECT * FROM emp WHERE comm IS NOT NULL AND comm = 300 OR comm = 500 OR comm = 1400;
+
+
 
 #월급여가 1200 에서 3500 사이의 사원의 사번,이름,월급여를 조회하시오.
 
+SELECT * FROM emp;
+
+SELECT * FROM emp WHERE 1200 < sal AND sal < 3500;
+
 #직급이 매니저이고 부서번호가 30번인 사원의 이름,사번,직급,부서번호를 조회하시오.
 
+SELECT * FROM emp WHERE job = 'manager' AND deptno = 30;
+
 #부서번호가 30인 아닌 사원의 사번,이름,부서번호를 조회하시오.
+
+SELECT * FROM emp WHERE NOT deptno = 30;
 
 #커미션이 300, 500, 1400 이 모두 아닌 사원의 사번,이름,커미션을 조회하시오.
 
@@ -168,16 +169,19 @@ SELECT * FROM emp WHERE comm IS NOT IN (300,500,1400) OR comm IS NULL;
 
 #이름에 S가 포함되지 않는 사원의 사번,이름을 조회하시오.
 
-SELECT * FROM EMP WHERE ename NOT LIKE 's%';
+SELECT * FROM EMP WHERE ename NOT LIKE '%s%';
 
 
 #급여가 1200보다 미만이거나 3700 초과하는 사원의 사번,이름,월급여를 조회하시오.
 
-SELECT * FROM emp WHERE 1200 < sal AND sal < 3500;
+SELECT * FROM emp WHERE sal NOT BETWEEN 1200 AND 3700 ORDER BY sal;
 
 
 
 #직속상사가 NULL 인 사원의 이름과 직급을 조회하시오.
+SELECT * FROM emp;
+
+SELECT * FROM emp WHERE ename IS NULL;
 
 #부서별 평균월급여를 구하는 쿼리
 
@@ -192,7 +196,12 @@ SELECT deptno, COUNT(ename), COUNT(comm) FROM emp GROUP BY deptno;
 
 #부서별 최대 급여와 최소 급여를 구하는 쿼리
 
+SELECT MIN(sal), MAX(sal) FROM emp;
+
 #부서별로 급여 평균 (단, 부서별 급여 평균이 2000 이상만)
+
+SELECT deptno, AVG(sal) `avg` FROM emp WHERE sal GROUP BY deptno HAVING `avg` >= 2000; 
+
 
 #월급여가 1000 이상인 사원만을 대상으로 부서별로 월급여 평균을 구하라. 단, 평균값이 2000 이상인 레코드만 구하라.
 
@@ -200,8 +209,25 @@ SELECT deptno, AVG(sal) `avg` FROM emp WHERE sal >= 1000 GROUP BY deptno HAVING 
 
 #사원명과 부서명을 조회하시오.
 
+SELECT * FROM emp;
+
+SELECT * FROM dept;
+
+SELECT * FROM SALGRADE;
+
+SELECT ename, dname
+FROM EMP e
+INNER JOIN dept d;
+
+
 #이름,월급여,월급여등급을 조회하시오.
 
+
+
+SELECT ename, sal, grade
+FROM EMP e
+INNER JOIN salgrade s
+GROUP BY e.ename, e.sal, s.grade;
 
 #이름,부서명,월급여등급을 조회하시오.
 
@@ -218,4 +244,7 @@ ON e.deptno = d.deptno;
 
 SELECT e1.ename, e2.ename FROM emp e1
 INNER JOIN emp e2
-ON e1.mgr = e2.empno
+ON e1.mgr = e2.empno;
+
+SELECT * FROM emp; 
+
